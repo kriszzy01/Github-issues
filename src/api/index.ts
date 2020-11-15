@@ -27,7 +27,9 @@ export interface IssuesResult {
     issues: Issue[]
 }
 
-//Type for Issues Result
+export interface IssueResult {
+    issue: Issue
+}
 
 export const getIssues = async (
     owner: string,
@@ -44,5 +46,24 @@ export const getIssues = async (
         
     } catch (err) {
         throw err
+    }
+};
+
+export const getIssue = async (
+    owner: string,
+    repo: string,
+    issueNumber: number
+): Promise<IssueResult> => {
+    const url = `https://github.com/${owner}/${repo}/issues/${issueNumber}`;
+
+    try {
+        const issuesResponse = await axios.get(url);
+
+        return {
+            issue: issuesResponse.data
+        };
+
+    } catch (error) {
+        throw error;
     }
 };
