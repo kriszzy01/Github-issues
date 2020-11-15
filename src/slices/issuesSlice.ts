@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getIssues, Issue, IssuesResult } from "../api";
+import { getIssues, getIssue, Issue, IssuesResult, IssueResult } from "../api";
 import { AppThunk } from ".";
 
 export interface IssuesState {
@@ -16,13 +16,35 @@ export const IssuesInitialState: IssuesState = {
     error: null
 };
 
+const fetchPending = (state: IssuesState) => {
+    state.status = "pending";
+}
+
+const fetchRejected = (state: IssuesState, { payload }: PayloadAction<string>) => {
+    state.status = "idle";
+
+    state.error = payload;
+}
+
 const issues = createSlice({
     name: "issues",
     initialState: IssuesInitialState,
     reducers: {
-        fetchIssuesPending: (state) => {
-            state.status = "pending";
+        fetchIssuePending: fetchPending,
+
+        fetchIssueSuccess: (state, { payload }: PayloadAction<IssueResult>) => {
+            const { issue } = payload
+
+            state.issueByNumber[issue.number] = issue;
+
+            state.status = "idle";
+
+            state.error = null;
         },
+
+        fetchIssueRejected: fetchRejected,
+
+        fetchIssuesPending: fetchPending,
 
         fetchIssuesSuccess: (state, { payload }: PayloadAction<IssuesResult>) => {
             const { issues } = payload;
@@ -38,18 +60,17 @@ const issues = createSlice({
             state.error = null;
         },
 
-        fetchIssuesRejected: (state, action: PayloadAction<string>) => {
-            state.status = "idle";
-
-            state.error = action.payload;
-        }
+        fetchIssuesRejected: fetchRejected
     }
 });
 
-export const { 
+export const {
     fetchIssuesPending,
-    fetchIssuesSuccess, 
-    fetchIssuesRejected
+    fetchIssuesSuccess,
+    fetchIssuesRejected,
+    fetchIssuePending,
+    fetchIssueSuccess,
+    fetchIssueRejected
 } = issues.actions; //Actions
 
 export default issues.reducer; //Issues Reducer
@@ -69,5 +90,22 @@ export const fetchIssues = (
 
     } catch (error) {
         dispatch(fetchIssuesRejected(error.message));
+    }
+};
+
+export const fetchIssue = (
+    owner: string,
+    repo: string,
+    issueNumber: number
+): AppThunk => async dispatch => {
+    try {
+        dispatch(fetchIssuePending());
+
+        const issueResponse = await getIssue(owner, repo, issueNumber);
+
+        dispatch(fetchIssueSuccess(issueResponse))
+
+    } catch (error) {
+        dispatch(fetchIssueRejected(error.message))
     }
 };
