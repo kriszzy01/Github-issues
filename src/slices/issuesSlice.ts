@@ -1,15 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getIssues, getIssue, Issue, IssuesResult, IssueResult } from "../api";
+import { getIssues, getIssue } from "../api";
+import { IssuesState, IssuesResult, IssueResult } from "../types"
 import { AppThunk } from ".";
 
-export interface IssuesState {
-    issueByNumber: Record<number, Issue>;
-    currentPageIssues: number[];
-    status: "idle" | "pending";
-    error: string | null
-}
-
-export const IssuesInitialState: IssuesState = {
+export const issuesInitialState: IssuesState = {
     issueByNumber: {},
     currentPageIssues: [],
     status: "idle",
@@ -28,7 +22,7 @@ const fetchRejected = (state: IssuesState, { payload }: PayloadAction<string>) =
 
 const issues = createSlice({
     name: "issues",
-    initialState: IssuesInitialState,
+    initialState: issuesInitialState,
     reducers: {
         fetchIssuePending: fetchPending,
 

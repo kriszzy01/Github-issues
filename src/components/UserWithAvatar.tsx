@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "../api";
+import { User } from "../types";
 
 interface UserAvatarProps {
     user: User;
