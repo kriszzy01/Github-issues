@@ -2,6 +2,7 @@ import React from "react";
 import { UserWithAvatar } from "./UserWithAvatar";
 import { getIssues } from "../selectors";
 import { useSelector } from "react-redux";
+import { truncateText } from "../utils";
 
 export const Issues: React.FC = () => {
     const {
@@ -16,13 +17,15 @@ export const Issues: React.FC = () => {
     const listItem = issues.map(issue => {
         const { user, number, title, comments, body, id } = issue;
 
+        const truncatedText = truncateText(body);
+
         return (
             <li key={id}>
                 <UserWithAvatar user={user} />
                 <div>
                     <h2><span>{`#${number}`}</span>{title}</h2>
                     <p>{comments} {comments > 1 ? "comments" : "comment"}</p>
-                    <p>{body}</p>
+                    <p>{truncatedText}</p>
                 </div>
             </li>
         );
