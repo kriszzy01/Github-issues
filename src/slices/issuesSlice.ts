@@ -87,7 +87,10 @@ export const fetchIssues = (
     }
 };
 
-export const fetchIssue = (
+
+//I didn't use the thunk below
+
+/*export const fetchIssue = (
     owner: string,
     repo: string,
     issueNumber: number
@@ -102,4 +105,4 @@ export const fetchIssue = (
     } catch (error) {
         dispatch(fetchIssueRejected(error.message))
     }
-};
+};*/

@@ -1,37 +1,18 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { IssuesState, IssueResult, IssuesResult, Issue } from "../../types";
+import { IssuesState, Issue } from "../../types";
+import { fakeIssue } from "../../tests/fakeData";
 
 import reducer, {
     issuesInitialState,
-    fetchIssue,
     fetchIssuePending,
     fetchIssueSuccess,
     fetchIssueRejected,
-    fetchIssues,
     fetchIssuesPending,
     fetchIssuesSuccess,
     fetchIssuesRejected
 } from "../../slices/issuesSlice";
 
-const mockPayload: Issue = {
-    comments_url: 'https://api.github.com/repos/rails/rails/issues/40626/comments',
-    id: 743295564,
-    state: "open",
-    number: 40626,
-    title: 'Wrap evaluation of db/seeds.rb with the executor',
-    user: {
-        login: 'jonathanhefner',
-        avatar_url: 'https://avatars2.githubusercontent.com/u/771968?v=4'
-    },
-
-    labels: [{
-        id: 123812746,
-        name: 'activejob',
-        color: '5319e7'
-    }],
-    comments: 0,
-    body: "Mock Issue Body"
-};
+const mockPayload = fakeIssue() as Issue;
 
 describe("Issues Reducer", () => {
     test("should render initial state on initialization", () => {
